@@ -35,13 +35,35 @@ class Bank
       acc.link(:class=>"name").click
       @browser.link(:href=>"#contract-history").wait_until(&:present?).click
       sleep 3
-
+      setPeriod
       transactionsInfoByAccountExtract(name)
 
       @accounts_array.push(Accounts.new(name,currency,amount))
       @browser.span(:text=>"Carduri și conturi").click
       @browser.div(:class=>"contracts-section").wait_until(&:present?)
     end
+  end
+  def setPeriod
+    puts("asdas")
+    @browser.link(:href=>"#contract-history").wait_until(&:present?).click
+    @browser.div(:class=>"filters").wait_until(&:present?)
+    time=Date.today << 2
+    @browser.input(:name=>"from").click
+    i = 1
+    @browser.div(:class=>"ui-datepicker-title ").browser.divs(:class=>"arrow").map do |arrow|
+        if i==3 then
+          break
+        elsif i==2 then
+          arrow.wait_until(&:present?).click
+          @browser.li(:text=>(time.year).to_s).click
+        end
+        i+=1
+      end
+      @browser.div(:class=>"ui-datepicker-title ").div(:class=>"arrow").wait_until(&:present?).click
+      @browser.li("data-option-array-index"=>(time.month-1).to_s).click
+      @browser.link(:text=>time.day.to_s).click
+    sleep 2
+
   end
 
   def transactionsInfoByAccountExtract(acc)
