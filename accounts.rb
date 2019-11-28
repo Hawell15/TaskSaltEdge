@@ -7,6 +7,7 @@ class Accounts
     @name=name
     @currency=currency
     @balance=balance
+
   end
 
   def to_hash
@@ -19,4 +20,7 @@ class Accounts
     to_hash.to_json
   end
 
+  def print
+    puts("Account: name:#{@name}, currency:#{@currency}, balance:#{@balance}")
+  end
 end
