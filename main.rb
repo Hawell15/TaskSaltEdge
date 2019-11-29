@@ -8,8 +8,8 @@ class Bank
   def openAccountPage
     @browser=Watir::Browser.new
     @browser.goto("https://wb.micb.md/way4u-wb/");
-    login="Hawell"
-    password="Sport5Roma15Vera"
+    login=""
+    password=""
     username=@browser.text_field(:class=>"username")
     username.exists?
     username.set login
@@ -27,24 +27,26 @@ class Bank
     @browser.span(:text=>"Carduri și conturi").click
     @browser.div(:class=>"contracts-section").wait_until(&:present?)
     @accounts_array=Array.new
-    @transaction_array= Array.new
+
     @browser.divs(:class=>"main-info").map do |acc|
       name=acc.link(:class=>"name").title
       currency=acc.div(:class=>["icon", "icon-account "]).text
       amount = acc.span(:class=>"amount").text
+      account=Accounts.new(name,currency,amount)
+
       acc.link(:class=>"name").click
       @browser.link(:href=>"#contract-history").wait_until(&:present?).click
       sleep 3
       setPeriod
-      transactionsInfoByAccountExtract(name)
-
-      @accounts_array.push(Accounts.new(name,currency,amount))
+  @transaction_array= Array.new
+      transactionsInfoByAccountExtract(name,account)
+      account.transactions=@transaction_array
+      @accounts_array.push(account)
       @browser.span(:text=>"Carduri și conturi").click
       @browser.div(:class=>"contracts-section").wait_until(&:present?)
     end
   end
   def setPeriod
-    puts("asdas")
     @browser.link(:href=>"#contract-history").wait_until(&:present?).click
     @browser.div(:class=>"filters").wait_until(&:present?)
     time=Date.today << 2
@@ -66,7 +68,7 @@ class Bank
 
   end
 
-  def transactionsInfoByAccountExtract(acc)
+  def transactionsInfoByAccountExtract(acc,account)
       if @browser.link(:class=>"operation-details").exists?
         @browser.spans(:class=>"history-item-description").map do |trans|
           data,description,amount,currency=transactionsInfoExtract(trans)
@@ -114,4 +116,4 @@ bank=Bank.new
 bank.openAccountPage
 bank.accountInfoExtract
 bank.printAccount
-bank.printTransaction
+#bank.printTransaction

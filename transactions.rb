@@ -22,6 +22,6 @@ class Transactions
   end
 
 public  def print
-    puts("    Transaction: date#{@date}, description:#{@description}, amount:#{@amount}, currency:#{@currency},account name:#{@account_name}")
+    puts("    Transaction: date:#{@date}, description:#{@description}, amount:#{@amount}, currency:#{@currency},account name:#{@account_name}")
 end
 end
